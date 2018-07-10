@@ -1,4 +1,4 @@
 program qtree
     implicit none
-    print *, 'hello world'
+    print *, 'hello'
 end program qtree
