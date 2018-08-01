@@ -22,7 +22,7 @@ module galaxy
 contains
     subroutine initialize(v,grid,pos,m, velocity)
         real(8), intent(IN) :: v
-        integer, parameter :: n=2000
+        integer, parameter :: n=21
         real(8), parameter ::  parsec = 3.085677581d16, R = parsec*50d3, m_sun = 2d30, M_tot = m_sun*1d11,  Pi = 3.1415927
         real(8), allocatable, intent(OUT) :: pos(:,:), velocity(:,:)
         real(8), intent(OUT) :: m, grid(n,3)
@@ -31,13 +31,14 @@ contains
 
         real(8) :: grid_distance, sigma,x1,x2,y1,y2,y3
 
-        grid_distance = R/n
-        grid(:,1) = (/ (i,i=1,n) /)*grid_distance-1d3
-        grid(:,2) = (/ (i,i=1,n) /)*grid_distance-1d3
-        grid(:,3) = (/ (i,i=1,n) /)*grid_distance-1d3
+        grid_distance = 2*R/(n-1._8)
 
+        grid(:,1) = (/ (i,i=0,n-1) /)*grid_distance-R
+        grid(:,2) = (/ (i,i=0,n-1) /)*grid_distance-R
+        grid(:,3) = (/ (i,i=0,n-1) /)*grid_distance-R
+        print *, R**2, grid(1,1)**2+grid(1,2)**2+grid(1,3)**2
         allocate(pos(int(1d4),3))
-        allocate(temp(int(1d4),3))
+
         l=1
         do i=1,n
             do k=1,n
@@ -86,18 +87,24 @@ end module galaxy
 
 program gravitational_dynamics
     use galaxy
-    real(8) :: v=85d3, m
-    real(8), allocatable :: grid(:,:), pos(:,:), velocity(:,:)
+    real(8) :: v=85d3, m, grid(21,3)
+    real(8), allocatable ::  pos(:,:), velocity(:,:)
     integer :: i,n
 
     call initialize(v,grid,pos,m, velocity)
-!    n =size(velocity,1)
-!    print *, n
-!    open(unit=1 , file = 'test.csv')
-!    do i=1,n
-!    write (1, '(3es12.4)')velocity(i,1),velocity(i,2),velocity(i,3)
-!    end do
-!    close (unit=1)
+     n =size(velocity,1)
+     print *, n, grid(:,1)
+     open(unit=1 , file = 'test.csv')
+     do i=1,n
+     write (1, '(3es12.4)')velocity(i,1),velocity(i,2),velocity(i,3)
+     end do
+     close (unit=1)
+
+     open(unit=2 , file = 'test1.csv')
+     do i=1,n
+     write (2, '(3es12.4)')pos(i,1),pos(i,2),pos(i,3)
+     end do
+     close (unit=2)
 
 
 end program gravitational_dynamics
