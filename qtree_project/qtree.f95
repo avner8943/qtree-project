@@ -22,10 +22,10 @@ module galaxy
 contains
     subroutine initialize(v)
         real(8), intent(IN) :: v
-        real(8), parameter ::  parsec = 3.085677581d16, R = parsec*50d3, m_sun = 2d30, M = m_sun*1d11, n=2d3, n2
-        real(8), allocatable :: pos(:,3), velocity(:,3)
-        integer :: i, j, k, l
-        real(8) :: grid_distance, x_grid(n), y_grid(n), z_grid(n)
+        real(8), parameter ::  parsec = 3.085677581d16, R = parsec*50d3, m_sun = 2d30, M_tot = m_sun*1d11, n=2d3,  Pi = 3.1415927
+        real(8), allocatable :: pos(:,3), velocity(:,3), temp(:,3)
+        integer :: i, j, k, l, n2
+        real(8) :: grid_distance, x_grid(n), y_grid(n), z_grid(n), sigma
         grid_distance = R/n
         x_grid = (/ (i,i=0,n)*grid_distance-1d3 /)
         y_grid = (/ (i,i=0,n)*grid_distance-1d3 /)
@@ -43,8 +43,29 @@ contains
             end do
         end do
 
-       n2 = floor(l/2.0_8)
+        if (mod(f,2)==0) then
+            call move_alloc(pos,temp)
+            allocate (pos(l-2,3))
+            pos(:,:) = temp(1:l-2,:)
+            n2 = l-2
+        else
+            n2 = l-1
+        end if
 
+       sigma = v/sqrt(3)
+       do i=1,n2
+       call random_number(x1)
+       call random_number(x2)
+       y1 = sigma*(sqrt(-2*log(x1))*cos(2*pi*x2))
+       y2 = sigma*(sqrt(-2*log(x1))*sin(2*pi*x2))
+       velocity(i,1:2) = (/ y1,y2 /)
+       call random_number(x1)
+       call random_number(x2)
+       y3 = sigma*(sqrt(-2*log(x1))*cos(2*pi*x2))
+       velocity(i,3) = y3
+       end do
+
+       m = M_tot/n2
 
     end subroutine intialize
 
