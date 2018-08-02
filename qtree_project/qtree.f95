@@ -1,11 +1,27 @@
 
-module qtree
+module oc_tree
     implicit none
 
+    contains
+
+    recursive subroutine cube(x,y,z,pos)
+    x_mid = sum(x)/2
+    y_mid = sum(y)/2
+    z_mid = sum(z)/2
+
+    cube1 = newcube(x(1), x_mid, y(1), y_mid, z(1), z_mid)
+    cube2 = newcube(x(1), x_mid, y(1), y_mid, z_mid, z(2))
+    cube3 = newcube(x(1), x_mid, y_mid, y(2), z(1), z_mid)
+    cube4 = newcube(x(1), x_mid, y_mid, y(2), z_mid, y(2))
+    cube5 = newcube(x_mid, x(2), y(1), y_mid, z(1), z_mid)
+    cube6 = newcube(x_mid, x(2), y(1), y_mid, z_mid, z(2))
+    cube7 = newcube(x_mid, x(2), y_mid, y(2), z(1), z_mid)
+    cube8 = newcube(x_mid, x(2), y_mid, y(2), z_mid, z(2))
 
 
+    end subroutine cube
 
-end module qtree
+end module oc_tree
 
 module MAC
 
@@ -36,7 +52,7 @@ contains
         grid(:,1) = (/ (i,i=0,n-1) /)*grid_distance-R
         grid(:,2) = (/ (i,i=0,n-1) /)*grid_distance-R
         grid(:,3) = (/ (i,i=0,n-1) /)*grid_distance-R
-        print *, R**2, grid(1,1)**2+grid(1,2)**2+grid(1,3)**2
+        print *, R**2, grid(11,1)
         allocate(pos(int(1d4),3))
 
         l=1
